@@ -10,6 +10,9 @@ var Ball = function(x, y){
 	
 	this.Gravity = 1;
 	this.moveSpeed = 2;
+
+	this.xSpeed = 0;
+	this.ySpeed = 0;
 };
 
 var spriteLoader = function(image){
@@ -33,9 +36,10 @@ Ball.prototype.Draw = function(offsetX, offsetY)
 };
 
 Ball.prototype.Update = function(){
-	PS.debug("Ball Position x: " + this. x + ", y: " + this.y);
+	PS.debug("Ball Position x: " + this.x + ", y: " + this.y);
 	
 	if (this.time >= 0) {
-		this.y += this.Gravity * this.time;
+		this.y += (this.Gravity + this.ySpeed) * this.time;
+		this.x += this.xSpeed * this.time;
 	}
 };	
