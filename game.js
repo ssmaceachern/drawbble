@@ -243,6 +243,9 @@ PS.swipe = function( data, options ) {
 	//calculates the line between the first and last beads that were swiped
 	var newLine = new Array();
 	newLine = PS.line(data.events[0].x, data.events[0].y, data.events[data.events.length - 1].x, data.events[data.events.length - 1].y);
+	
+	//calculate the angle of the line
+	var angle = 
 
 	//draws the line
 	var tempspr;
@@ -253,7 +256,8 @@ PS.swipe = function( data, options ) {
 		}
 		else {
 			//PS.color(newLine[i][0], newLine[i][1], PS.COLOR_BLACK);
-			tempspr = PS.spriteMove(PS.spriteSolid(1,1), newLine[i][0], newLine[i][1]);
+			tempspr = PS.spriteSolid(1,1);
+			PS.spriteMove(tempspr, newLine[i][0], newLine[i][1]);
 
 			PS.spriteCollide(tempspr, collision);
 		}
@@ -262,7 +266,15 @@ PS.swipe = function( data, options ) {
 
 //collision behavior
 function collision(s1, p1, s2, p2, type){
-	
+	if ((s1 == "sprite_0") || (s2 == "sprite_0")){
+		//change ball velocity
+		Ball.xSpeed = Ball.xSpeed * -1;
+		Ball.ySpeed = Ball.ySpeed * -1;
+		return;
+	}
+	else{
+	return PS.DEFAULT;
+	}
 }
 
 // PS.input ( sensors, options )
