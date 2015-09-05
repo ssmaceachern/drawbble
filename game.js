@@ -1,4 +1,5 @@
 ﻿// game.js for Perlenspiel 3.2
+//DRAWBBLE
 
 //draws a line along the swiped mouse path
 
@@ -244,16 +245,25 @@ PS.swipe = function( data, options ) {
 	newLine = PS.line(data.events[0].x, data.events[0].y, data.events[data.events.length - 1].x, data.events[data.events.length - 1].y);
 
 	//draws the line
+	var tempspr;
 	var i;
 	for (i=0; i < newLine.length; i++){
 		if (newLine[i][0] < 0 || newLine[i][1] < 0){
 			break;
 		}
 		else {
-			PS.color(newLine[i][0], newLine[i][1], PS.COLOR_BLACK);
+			//PS.color(newLine[i][0], newLine[i][1], PS.COLOR_BLACK);
+			tempspr = PS.spriteMove(PS.spriteSolid(1,1), newLine[i][0], newLine[i][1]);
+
+			PS.spriteCollide(tempspr, collision);
 		}
 	}
 };
+
+//collision behavior
+function collision(s1, p1, s2, p2, type){
+	
+}
 
 // PS.input ( sensors, options )
 // Called when an input device event (other than mouse/touch/keyboard) is detected
