@@ -55,7 +55,7 @@ PS.init = function( system, options ) {
 
 	// Add any other initialization code you need here
 
-	Ball(14, 14);
+	Game.addObject(new Ball(14, 14));
 
 	//var Ball = PS.imageLoad("ball.bmp", spriteLoader, 4);
 

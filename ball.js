@@ -5,7 +5,7 @@
 var Ball = function(x, y){
 	GameObject.call(this, x, y, 4, 4, "Ball");
 	
-	this.sprite = PS.imageLoad("ball.bmp", spriteLoader, 4);
+	this.imageID = PS.imageLoad("ball.bmp", spriteLoader, 4);
 	//PS.spriteMove("sprite_0", this.x, this.y);
 	
 	this.Gravity = 1;
@@ -18,28 +18,31 @@ var Ball = function(x, y){
 var spriteLoader = function(image){
 	
 	//Load Ball Sprite
-	var ball_sprite = PS.spriteImage(image);
+	this.sprite = PS.spriteImage(image);
 	
-	PS.spriteMove(ball_sprite, this.x, this.y);
+	PS.spriteMove(this.sprite, this.x, this.y);
 	
-	return ball_sprite;
+	return this.sprite;
 };
 
 GameObject.prototype.impart(Ball);
 
 Ball.prototype.Draw = function(offsetX, offsetY)
 {
+	PS.debug(this.name + ": Draw Frame!\n");
+	
 	this.x = this.x + offsetX;
 	this.y = this.y + offsetY;
 	
-	var loc = PS.spriteMove("sprite_0", this.x, this.y);
+	this.sprite = PS.spriteImage(PS.imageLoad("ball.bmp", spriteLoader, 4));
+	var loc = PS.spriteMove(this.sprite, this.x, this.y);
 };
 
 Ball.prototype.Update = function(){
-	PS.debug("Ball Position x: " + this.x + ", y: " + this.y);
+	PS.debug(this.name + " Position x: " + this.x + ", y: " + this.y + "\n");
 	
 	if (this.time >= 0) {
-		this.y += (this.Gravity + this.ySpeed) * this.time;
+		this.y += 1;
 		this.x += this.xSpeed * this.time;
 	}
 };	

@@ -15,12 +15,18 @@ var GameObject = function(x, y, w, h, name){
 	this.sprite = null;
 };
 
+/**
+ * Function needed to give characteristics to another prototype
+ */
 function clone(object) {
-	function OneShotConstructor(){}
-	OneShotConstructor.prototype = object;
-	return new OneShotConstructor();
+	function tmp(){}
+	tmp.prototype = object;
+	return new tmp();
 }
 
+/**
+ * Allows us to extend GameObject functions to child class
+ */
 GameObject.prototype.impart = function(childConstructor) {
 	childConstructor.prototype = clone(GameObject.prototype);
 	childConstructor.prototype.constructor = childConstructor;
@@ -56,16 +62,16 @@ GameObject.prototype._update = function(){
  * @param {Object} x
  * @param {Object} y
  */
-GameObject.prototype._draw = function(x, y){
-	this.Draw(x, y);
+GameObject.prototype._draw = function(offsetX, offsetY){
+	this.Draw(offsetX, offsetY);
 };
 
 GameObject.prototype.Draw = function(offsetX, offsetY){
 	//stub for objects to inherit from
-	PS.debug("Draw frame!\n");
+	//PS.debug(this.name + ": Draw frame!\n");
 };
 
 GameObject.prototype.Update = function(){
 	//stub for objects to inherit from
-	PS.debug("Update frame!\n");
+	//PS.debug(this.name + ": Update frame!\n");
 };
