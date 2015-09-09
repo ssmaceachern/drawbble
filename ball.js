@@ -7,18 +7,18 @@ var Ball = function(x, y){
 	
 	this.imageID = PS.imageLoad("ball.bmp", this.spriteLoader.bind(this), 4);
 	
-	this.Gravity = 1;
+	this.Gravity = 1/60;
 	this.moveSpeed = 2;
 
 	this.xSpeed = 0;
-	this.ySpeed = 0;
+	this.ySpeed = 1/60;
 };
 
 GameObject.prototype.impart(Ball);
 
 Ball.prototype.Draw = function(offsetX, offsetY)
 {
-	PS.debug(this.name + ": Draw Frame!\n");
+	//PS.debug(this.name + ": Draw Frame!\n");
 	
 	this.x = this.x + offsetX;
 	this.y = this.y + offsetY;
@@ -34,10 +34,10 @@ Ball.prototype.Draw = function(offsetX, offsetY)
 };
 
 Ball.prototype.Update = function(){
-	PS.debug(this.name + " Position x: " + this.x + ", y: " + this.y + "\n");
+	//PS.debug(this.name + " Position x: " + this.x + ", y: " + this.y + "\n");
 	
 	if (this.time >= 0) {
-		this.y += 1;
-		this.x += this.xSpeed * this.time;
+		this.y += this.ySpeed;
+		this.x += this.xSpeed;
 	}
 };	

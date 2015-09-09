@@ -231,14 +231,14 @@ PS.swipe = function( data, options ) {
 	var angle;
 	var p1x = newLine[0][0];
 	var p1y = newLine[0][1];
-	var p2x = newLine[newLine.length][0];
-	var p2y = newLine[newLine.length][1];
+	var p2x = newLine[newLine.length - 1][0];
+	var p2y = newLine[newLine.length - 1][1];
 	
 	if ((p1x < p2x) && (p1y > p2y)){
-		angle = (Math.atan((p1y - p2y)/(p2x - p1x))) * (180/Math.PI);
+		angle = ((Math.atan((p1y - p2y)/(p2x - p1x))) * (180/Math.PI)) * -1;
 	}
 	else if ((p1x > p2x) && (p1y < p2y)){
-		angle = (Math.atan((p2y - p1y)/(p1x - p2x))) * (180/Math.PI);
+		angle = ((Math.atan((p2y - p1y)/(p1x - p2x))) * (180/Math.PI)) * -1;
 	}
 	else if ((p1x > p2x) && (p1y > p2y)){
 		angle = (Math.atan((p1y - p2y)/(p1x - p2x))) * (180/Math.PI);
@@ -264,6 +264,7 @@ PS.swipe = function( data, options ) {
 			//PS.color(newLine[i][0], newLine[i][1], PS.COLOR_BLACK);
 			tempspr = PS.spriteSolid(1,1);
 			PS.spriteMove(tempspr, newLine[i][0], newLine[i][1]);
+			PS.data(newLine[i][0], newLine[i][1], angle);
 
 			PS.spriteCollide(tempspr, collision);
 		}
@@ -272,11 +273,44 @@ PS.swipe = function( data, options ) {
 
 //collision behavior
 function collision(s1, p1, s2, p2, type){
+	PS.debug("In collision!\n");
 	if ((s1 == "sprite_0") || (s2 == "sprite_0")){
+		PS.debug("ball has collided\n");
 		//change ball velocity
-		Ball.xSpeed = Ball.xSpeed * -1;
-		Ball.ySpeed = Ball.ySpeed * -1;
-		return;
+		if (Ball.ySpeed > 0){
+			if(angle < 0){
+			Ball.xSpeed = -1;
+			Ball.ySpeed = 0;
+			}
+			else if((angle > 0) && (angle < 90)){
+			Ball.xSpeed = 1;
+			Ball.ySpeed = 0;
+			}
+			else if(angle == 90){
+			Ball.xSpeed = (Ball.xSpeed * -1);
+			}
+			else if(angle == 0){
+				Ball.ySpeed = (Ball.ySpeed * -1);
+			}
+		}
+		else if(Ball.ySpeed < 0){
+			if(angle < 0){
+			Ball.xSpeed = 1;
+			Ball.ySpeed = 0;
+			}
+			else if((angle > 0) && (angle < 90)){
+			Ball.xSpeed = -1;
+			Ball.ySpeed = 0;
+			}
+			else if(angle == 90){
+			Ball.xSpeed = (Ball.xSpeed * -1);
+			}
+			else if(angle == 0){
+				Ball.ySpeed = (Ball.ySpeed * -1);
+			}
+		}
+		
+		return 1;
 	}
 	else{
 	return PS.DEFAULT;
