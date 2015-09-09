@@ -245,7 +245,30 @@ PS.swipe = function( data, options ) {
 	newLine = PS.line(data.events[0].x, data.events[0].y, data.events[data.events.length - 1].x, data.events[data.events.length - 1].y);
 	
 	//calculate the angle of the line
-	var angle = 
+	var angle;
+	var p1x = newLine[0][0];
+	var p1y = newLine[0][1];
+	var p2x = newLine[newLine.length][0];
+	var p2y = newLine[newLine.length][1];
+	
+	if ((p1x < p2x) && (p1y > p2y)){
+		angle = (Math.atan((p1y - p2y)/(p2x - p1x))) * (180/Math.PI);
+	}
+	else if ((p1x > p2x) && (p1y < p2y)){
+		angle = (Math.atan((p2y - p1y)/(p1x - p2x))) * (180/Math.PI);
+	}
+	else if ((p1x > p2x) && (p1y > p2y)){
+		angle = (Math.atan((p1y - p2y)/(p1x - p2x))) * (180/Math.PI);
+	}
+	else if ((p1x < p2x) && (p1y < p2y)){
+		angle = (Math.atan((p2y - p1y)/(p2x - p1x))) * (180/Math.PI);
+	}
+	else if (p1x == p2x){
+		angle = 90;
+	}
+	else{
+		angle = 0;
+	}
 
 	//draws the line
 	var tempspr;
