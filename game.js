@@ -66,17 +66,7 @@ PS.init = function( system, options ) {
 	
 	Game.run();
 
-	//PS.timerStart(30, tick);
 };	
-
-function spriteLoader(image){
-	
-	//load all sprites
-	var Ball = PS.spriteImage(image);
-	PS.spriteMove(Ball, 14, 14);
-	//PS.debug(Ball);
-	return Ball;
-}
 
 // PS.touch ( x, y, data, options )
 // Called when the mouse button is clicked on a bead, or when a bead is touched

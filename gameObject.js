@@ -15,6 +15,13 @@ var GameObject = function(x, y, w, h, name){
 	this.sprite = null;
 };
 
+GameObject.prototype.spriteLoader = function(image){
+	//Load Ball Sprite
+	if(this.sprite == null){
+		this.sprite = PS.spriteImage(image);	
+	}
+};
+
 /**
  * Function needed to give characteristics to another prototype
  */
