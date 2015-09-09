@@ -15,6 +15,17 @@ var GameObject = function(x, y, w, h, name){
 	this.sprite = null;
 };
 
+function clone(object) {
+	function OneShotConstructor(){}
+	OneShotConstructor.prototype = object;
+	return new OneShotConstructor();
+}
+
+GameObject.prototype.impart = function(childConstructor) {
+	childConstructor.prototype = clone(GameObject.prototype);
+	childConstructor.prototype.constructor = childConstructor;
+};
+
 /**
  * Checks if a certain location falls within the bounds of the object
  * @param {Object} x
@@ -51,8 +62,10 @@ GameObject.prototype._draw = function(x, y){
 
 GameObject.prototype.Draw = function(offsetX, offsetY){
 	//stub for objects to inherit from
+	PS.debug("Draw frame!\n");
 };
 
 GameObject.prototype.Update = function(){
 	//stub for objects to inherit from
+	PS.debug("Update frame!\n");
 };

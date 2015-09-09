@@ -41,7 +41,7 @@ See dygraphs License.txt, <http://dygraphs.com> and <http://opensource.org/licen
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
-
+var Game;
 
 PS.init = function( system, options ) {
 	"use strict";
@@ -50,8 +50,8 @@ PS.init = function( system, options ) {
 	// the initial dimensions you want (32 x 32 maximum)
 	// Do this FIRST to avoid problems!
 	// Otherwise you will get the default 8x8 grid
-
-	PS.gridSize( 32, 32 );
+	
+	Game = new Window(32, 32, PS.COLOR_WHITE);
 
 	// Add any other initialization code you need here
 
@@ -63,18 +63,11 @@ PS.init = function( system, options ) {
 	PS.color(PS.ALL, 31, PS.COLOR_BLACK);
 	PS.color(0, PS.ALL, PS.COLOR_BLACK);
 	PS.color(31, PS.ALL, PS.COLOR_BLACK);
-	PS.timerStart(1, GameObject.prototype._tick.bind(this));
-	//PS.timerStart(30, tick);
-};
+	
+	Game.run();
 
-// function tick(){
-// 
-	// var loc = PS.spriteMove("sprite_0", PS.CURRENT, PS.CURRENT);
-	// var newx = loc.x + 1;
-	// var newy = loc.y + 1;	
-	// PS.spriteMove("sprite_0", newx, newy);
-// 
-// }	
+	//PS.timerStart(30, tick);
+};	
 
 function spriteLoader(image){
 	
