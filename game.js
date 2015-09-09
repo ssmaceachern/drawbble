@@ -42,6 +42,7 @@ See dygraphs License.txt, <http://dygraphs.com> and <http://opensource.org/licen
 // [options] = an object with optional parameters; see documentation for details
 
 var Game;
+var Player;
 
 PS.init = function( system, options ) {
 	"use strict";
@@ -54,16 +55,34 @@ PS.init = function( system, options ) {
 	Game = new Window(32, 32, PS.COLOR_WHITE);
 
 	// Add any other initialization code you need here
-
-	Game.addObject(new Ball(14, 14));
+	Player = new Ball(14,14);
+	Game.addObject(Player);
+	//Game.addObject(new Ball(14,14));
 
 	//var Ball = PS.imageLoad("ball.bmp", spriteLoader, 4);
 
-	PS.color(PS.ALL, 0, PS.COLOR_BLACK);
-	PS.color(PS.ALL, 31, PS.COLOR_BLACK);
-	PS.color(0, PS.ALL, PS.COLOR_BLACK);
-	PS.color(31, PS.ALL, PS.COLOR_BLACK);
-	
+	//PS.color(PS.ALL, 0, PS.COLOR_BLACK);
+	//PS.color(PS.ALL, 31, PS.COLOR_BLACK);
+	//PS.color(0, PS.ALL, PS.COLOR_BLACK);
+	//PS.color(31, PS.ALL, PS.COLOR_BLACK);
+	/*
+	var tempspr_1, tempspr_2, tempspr_3, tempspr_4;
+	var o;
+	for (o=0; o < 32; o++){
+		tempspr_1 = PS.spriteSolid(1,1);
+		tempspr_2 = PS.spriteSolid(1,1);
+		tempspr_3 = PS.spriteSolid(1,1);
+		tempspr_4 = PS.spriteSolid(1,1);
+		PS.spriteMove(tempspr_1, o, 0);
+		PS.spriteMove(tempspr_2, o, 31);
+		PS.spriteMove(tempspr_3, 0, o);
+		PS.spriteMove(tempspr_4, 31, o);
+		//PS.data(o, 0, 0);
+		//PS.data(o, 31, 0);
+		//PS.data(0, o, 90);
+		//PS.data(31, o, 90);
+	}
+	*/
 	Game.run();
 
 };	
@@ -267,52 +286,101 @@ PS.swipe = function( data, options ) {
 			PS.data(newLine[i][0], newLine[i][1], angle);
 
 			PS.spriteCollide(tempspr, collision);
+			iscolliding = false;
 		}
 	}
 };
 
+var iscolliding = false;
 //collision behavior
 function collision(s1, p1, s2, p2, type){
-	PS.debug("In collision!\n");
-	if ((s1 == "sprite_0") || (s2 == "sprite_0")){
-		PS.debug("ball has collided\n");
+	//PS.debug("In collision!\n");
+	var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
+	var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
+	
+	if (s1 == "sprite_0" && !iscolliding){
+		PS.debug("ball has collided 1\n");
 		//change ball velocity
-		if (Ball.ySpeed > 0){
-			if(angle < 0){
-			Ball.xSpeed = -1;
-			Ball.ySpeed = 0;
+		if (Player.ySpeed > 0){
+			if(PS.data(s2_pos.x, s2_pos.y) < 0){
+			Player.xSpeed = -1;
+			Player.ySpeed = 0;
 			}
-			else if((angle > 0) && (angle < 90)){
-			Ball.xSpeed = 1;
-			Ball.ySpeed = 0;
+			else if((PS.data(s2_pos.x, s2_pos.y) > 0) && (PS.data(s2_pos.x, s2_pos.y) < 90)){
+			Player.xSpeed = 1;
+			Player.ySpeed = 0;
 			}
-			else if(angle == 90){
-			Ball.xSpeed = (Ball.xSpeed * -1);
+			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
+			Player.xSpeed = (Player.xSpeed * -1);
 			}
-			else if(angle == 0){
-				Ball.ySpeed = (Ball.ySpeed * -1);
-			}
-		}
-		else if(Ball.ySpeed < 0){
-			if(angle < 0){
-			Ball.xSpeed = 1;
-			Ball.ySpeed = 0;
-			}
-			else if((angle > 0) && (angle < 90)){
-			Ball.xSpeed = -1;
-			Ball.ySpeed = 0;
-			}
-			else if(angle == 90){
-			Ball.xSpeed = (Ball.xSpeed * -1);
-			}
-			else if(angle == 0){
-				Ball.ySpeed = (Ball.ySpeed * -1);
+			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
+				Player.ySpeed = (Player.ySpeed * -1);
 			}
 		}
-		
+		else if(Player.ySpeed < 0){
+			if(PS.data(s2_pos.x, s2_pos.y) < 0){
+			Player.xSpeed = 1;
+			Player.ySpeed = 0;
+			}
+			else if((PS.data(s2_pos.x, s2_pos.y) > 0) && (PS.data(s2_pos.x, s2_pos.y) < 90)){
+			Player.xSpeed = -1;
+			Player.ySpeed = 0;
+			}
+			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
+			Player.xSpeed = (Player.xSpeed * -1);
+			}
+			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
+				Player.ySpeed = (Player.ySpeed * -1);
+			}
+		}
+		if (iscolliding == false){
+		iscolliding = true;
+		}
+		return 1;
+	}
+	else if (s2 == "sprite_0" && !iscolliding){
+		PS.debug("ball has collided 2\n");
+		PS.debug(PS.data(s1_pos.x, s1_pos.y));
+		//change ball velocity
+		if (Player.ySpeed > 0){
+			if(PS.data(s1_pos.x, s1_pos.y) < 0){
+			Player.xSpeed = -1;
+			Player.ySpeed = 0;
+			}
+			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
+			Player.xSpeed = 1;
+			Player.ySpeed = 0;
+			}
+			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
+			Player.xSpeed = (Player.xSpeed * -1);
+			}
+			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
+				Player.ySpeed = (Player.ySpeed * -1);
+			}
+		}
+		else if(Player.ySpeed < 0){
+			if(PS.data(s1_pos.x, s1_pos.y) < 0){
+			Player.xSpeed = 1;
+			Player.ySpeed = 0;
+			}
+			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
+			Player.xSpeed = -1;
+			Player.ySpeed = 0;
+			}
+			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
+			Player.xSpeed = (Player.xSpeed * -1);
+			}
+			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
+				Player.ySpeed = (Player.ySpeed * -1);
+			}
+		}
+		if (iscolliding == false){
+		iscolliding = true;
+		}
 		return 1;
 	}
 	else{
+	iscolliding = false;
 	return PS.DEFAULT;
 	}
 }
