@@ -65,7 +65,9 @@ PS.init = function( system, options ) {
 	//PS.color(PS.ALL, 31, PS.COLOR_BLACK);
 	//PS.color(0, PS.ALL, PS.COLOR_BLACK);
 	//PS.color(31, PS.ALL, PS.COLOR_BLACK);
-	/*
+	
+	Game.run();
+	
 	var tempspr_1, tempspr_2, tempspr_3, tempspr_4;
 	var o;
 	for (o=0; o < 32; o++){
@@ -77,14 +79,16 @@ PS.init = function( system, options ) {
 		PS.spriteMove(tempspr_2, o, 31);
 		PS.spriteMove(tempspr_3, 0, o);
 		PS.spriteMove(tempspr_4, 31, o);
-		//PS.data(o, 0, 0);
-		//PS.data(o, 31, 0);
-		//PS.data(0, o, 90);
-		//PS.data(31, o, 90);
+		PS.data(o, 0, 0);
+		PS.data(o, 31, 0);
+		PS.data(0, o, 90);
+		PS.data(31, o, 90);
+		PS.spriteCollide(tempspr_1, collision);
+		PS.spriteCollide(tempspr_2, collision);
+		PS.spriteCollide(tempspr_3, collision);
+		PS.spriteCollide(tempspr_4, collision);
 	}
-	*/
-	Game.run();
-
+	
 };	
 
 // PS.touch ( x, y, data, options )
@@ -298,7 +302,7 @@ function collision(s1, p1, s2, p2, type){
 	var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
 	var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
 	
-	if (s1 == "sprite_0" && !iscolliding){
+	if (s1 == Player.sprite && !iscolliding){
 		PS.debug("ball has collided 1\n");
 		//change ball velocity
 		if (Player.ySpeed > 0){
@@ -312,6 +316,7 @@ function collision(s1, p1, s2, p2, type){
 			}
 			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
 			Player.xSpeed = (Player.xSpeed * -1);
+			PS.debug("wall bounce\n");
 			}
 			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
 				Player.ySpeed = (Player.ySpeed * -1);
@@ -338,33 +343,38 @@ function collision(s1, p1, s2, p2, type){
 		}
 		return 1;
 	}
-	else if (s2 == "sprite_0" && !iscolliding){
-		PS.debug("ball has collided 2\n");
-		PS.debug(PS.data(s1_pos.x, s1_pos.y));
+	else if (s2 == Player.sprite && !iscolliding){
+		PS.debug("\nball has collided 2\n");
+		PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
 		//change ball velocity
-		if (Player.ySpeed > 0){
+		if (Player.ySpeed >= 0){
 			if(PS.data(s1_pos.x, s1_pos.y) < 0){
-			Player.xSpeed = -1;
+			PS.debug("\nneg angle\n");
+			Player.xSpeed = -1/30;
 			Player.ySpeed = 0;
 			}
 			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
-			Player.xSpeed = 1;
+			PS.debug("\npos angle\n");
+			Player.xSpeed = 1/30;
 			Player.ySpeed = 0;
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
+			PS.debug("\nwall bounce\n" + s1_pos.x + s1_pos.y + PS.data(s1_pos.x, s1_pos.y));
 			Player.xSpeed = (Player.xSpeed * -1);
+			iscolliding = true;
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
+				PS.debug("\nline bounce\n");
 				Player.ySpeed = (Player.ySpeed * -1);
 			}
 		}
 		else if(Player.ySpeed < 0){
 			if(PS.data(s1_pos.x, s1_pos.y) < 0){
-			Player.xSpeed = 1;
+			Player.xSpeed = 1/30;
 			Player.ySpeed = 0;
 			}
 			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
-			Player.xSpeed = -1;
+			Player.xSpeed = -1/30;
 			Player.ySpeed = 0;
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
