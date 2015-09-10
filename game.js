@@ -298,57 +298,17 @@ function collision(s1, p1, s2, p2, type){
 	var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
 	var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
 	
-	if (s1 == "sprite_0" && !iscolliding){
-		PS.debug("ball has collided 1\n");
-		//change ball velocity
-		if (Player.ySpeed > 0){
-			if(PS.data(s2_pos.x, s2_pos.y) < 0){
-			Player.xSpeed = -1;
-			Player.ySpeed = 0;
-			}
-			else if((PS.data(s2_pos.x, s2_pos.y) > 0) && (PS.data(s2_pos.x, s2_pos.y) < 90)){
-			Player.xSpeed = 1;
-			Player.ySpeed = 0;
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
-			Player.xSpeed = (Player.xSpeed * -1);
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
-				Player.ySpeed = (Player.ySpeed * -1);
-			}
-		}
-		else if(Player.ySpeed < 0){
-			if(PS.data(s2_pos.x, s2_pos.y) < 0){
-			Player.xSpeed = 1;
-			Player.ySpeed = 0;
-			}
-			else if((PS.data(s2_pos.x, s2_pos.y) > 0) && (PS.data(s2_pos.x, s2_pos.y) < 90)){
-			Player.xSpeed = -1;
-			Player.ySpeed = 0;
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
-			Player.xSpeed = (Player.xSpeed * -1);
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
-				Player.ySpeed = (Player.ySpeed * -1);
-			}
-		}
-		if (iscolliding == false){
-		iscolliding = true;
-		}
-		return 1;
-	}
-	else if (s2 == "sprite_0" && !iscolliding){
+	if (s2 == "sprite_0" && !iscolliding){
 		PS.debug("ball has collided 2\n");
 		PS.debug(PS.data(s1_pos.x, s1_pos.y));
 		//change ball velocity
 		if (Player.ySpeed > 0){
 			if(PS.data(s1_pos.x, s1_pos.y) < 0){
-			Player.xSpeed = -1;
+			Player.xSpeed = -1/60;
 			Player.ySpeed = 0;
 			}
 			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
-			Player.xSpeed = 1;
+			Player.xSpeed = 1/60;
 			Player.ySpeed = 0;
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
@@ -360,11 +320,11 @@ function collision(s1, p1, s2, p2, type){
 		}
 		else if(Player.ySpeed < 0){
 			if(PS.data(s1_pos.x, s1_pos.y) < 0){
-			Player.xSpeed = 1;
+			Player.xSpeed = 1/60;
 			Player.ySpeed = 0;
 			}
 			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
-			Player.xSpeed = -1;
+			Player.xSpeed = -1/60;
 			Player.ySpeed = 0;
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
