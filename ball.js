@@ -3,7 +3,7 @@
  */
 
 var Ball = function(x, y){
-	GameObject.call(this, x, y, 4, 4, "Ball");
+	GameObject.call(this, x, y, 3, 3, "Ball");
 	
 	this.imageID = PS.imageLoad("ball.bmp", this.spriteLoader.bind(this), 4);
 	
