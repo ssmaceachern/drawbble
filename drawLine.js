@@ -182,5 +182,5 @@ DrawLine.prototype.Draw = function(offsetX, offsetY){
 
 DrawLine.prototype.collision = function(s1, p1, s2, p2, type)
 {
-	
+
 };
