@@ -232,23 +232,16 @@ PS.swipe = function( data, options ) {
 
 	// Uncomment the following block to inspect parameters
 
-	/*
-	 var len, i, ev;
-	 PS.debugClear();
-	 PS.debug( "PS.swipe(): start = " + data.start + ", end = " + data.end + ", dur = " + data.duration + "\n" );
-	 len = data.events.length;
-	 for ( i = 0; i < len; i += 1 ) {
-	 ev = data.events[ i ];
-	 PS.debug( i + ": [x = " + ev.x + ", y = " + ev.y + ", start = " + ev.start + ", end = " + ev.end +
-	 ", dur = " + ev.duration + "]\n");
-	 }
-	 */
-
 	// Add code here for when an input event is detected
 	
 	//calculates the line between the first and last beads that were swiped
 	var newLine = new Array();
 	newLine = PS.line(data.events[0].x, data.events[0].y, data.events[data.events.length - 1].x, data.events[data.events.length - 1].y);
+	
+	var newLine2 = new DrawLine(data.events[0].x, data.events[0].y, 
+		data.events[data.events.length - 1].x, data.events[data.events.length - 1].y, Player);
+		PS.debug("Line added\n");
+	Game.addObject(newLine2);
 	
 	//calculate the angle of the line
 	var angle;
@@ -300,50 +293,9 @@ var iscolliding = false;
 function collision(s1, p1, s2, p2, type){
 	//PS.debug("In collision!\n");
 	var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
-	var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
+	//var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
 
-	if (s1 == Player.sprite && !iscolliding){
-		PS.debug("ball has collided 1\n");
-		//change ball velocity
-		if (Player.ySpeed > 0){
-			if(PS.data(s2_pos.x, s2_pos.y) < 0){
-			Player.xSpeed = -1;
-			Player.ySpeed = 0;
-			}
-			else if((PS.data(s2_pos.x, s2_pos.y) > 0) && (PS.data(s2_pos.x, s2_pos.y) < 90)){
-			Player.xSpeed = 1;
-			Player.ySpeed = 0;
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
-			Player.xSpeed = (Player.xSpeed * -1);
-			PS.debug("wall bounce\n");
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
-				Player.ySpeed = (Player.ySpeed * -1);
-			}
-		}
-		else if(Player.ySpeed < 0){
-			if(PS.data(s2_pos.x, s2_pos.y) < 0){
-			Player.xSpeed = 1;
-			Player.ySpeed = 0;
-			}
-			else if((PS.data(s2_pos.x, s2_pos.y) > 0) && (PS.data(s2_pos.x, s2_pos.y) < 90)){
-			Player.xSpeed = -1;
-			Player.ySpeed = 0;
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 90){
-			Player.xSpeed = (Player.xSpeed * -1);
-			}
-			else if(PS.data(s2_pos.x, s2_pos.y) == 0){
-				Player.ySpeed = (Player.ySpeed * -1);
-			}
-		}
-		if (iscolliding == false){
-		iscolliding = true;
-		}
-		return 1;
-	}
-	else if (s2 == Player.sprite && !iscolliding){
+	if (s2 == Player.sprite && !iscolliding){
 		PS.debug("\nball has collided 2\n");
 		PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
 
