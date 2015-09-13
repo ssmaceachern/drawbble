@@ -40,6 +40,13 @@ Window.prototype.addObject = function(object) {
 	this.objects.push(object);
 };
 
+Window.prototype.removeObject = function(object) {
+	var tmp = object;
+	delete(this.objects.filter(function(obj){
+		tmp == obj;
+	}));
+};
+
 Window.prototype.Update = function(){
 	for (var i = 0; i < this.objects.length; ++i) {
 			this.objects[i]._update();

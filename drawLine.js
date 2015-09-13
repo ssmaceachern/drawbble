@@ -3,6 +3,17 @@
  */
 
 /**
+ *	Representation of a Bead for DrawLine 
+ */
+var Bead = function(x, y, sprite, angle){
+		this.x = x;
+		this.y = y;
+		this.sprite = sprite;
+		this.angle = angle;
+		this.isColliding = false;
+};
+
+/**
  *	Doubly Linked List for Beads 
  */
 var DoublyLinkedList = function(){
@@ -47,6 +58,22 @@ DoublyLinkedList.prototype = {
 					
 					return current.data;
 				}
+		},
+		
+		contains: function(object){
+			var current = this._head;
+			i = 0;
+			
+			while(current.next != null)
+			{
+				current = current.next;
+				if(current == object){
+					return true;
+				}
+			}
+			
+			return false;
+
 		},
 		
 		remove: function(index){
@@ -102,24 +129,20 @@ DoublyLinkedList.prototype = {
  * @param {Object} p2y
  */
 var DrawLine = function(p1x, p2x, p1y, p2y, PlayerRef){
-	//calculate the angle of the line
 	this.angle;
 	this.p1x = p1x;
 	this.p1y = p2x;
 	this.p2x = p1y;
 	this.p2y = p2y;
-	
-	this.line = new DoublyLinkedList;
-	var Bead = function(x, y, sprite, angle){
-		this.x = x;
-		this.y = y;
-		this.sprite = sprite;
-		this.angle = angle;
-		this.isColliding = false;
-	};
-	
 	this.player = PlayerRef;
+	this.name = "Line";
 	
+	this.line = new DoublyLinkedList();
+	var newLine = PS.line(this.p1x, this.p1y, this.p2x, this.p2y);
+	
+	/*
+	 * Calculate the angle of the line
+	 */
 	if ((p1x < p2x) && (p1y > p2y)){
 		this.angle = ((Math.atan((p1y - p2y)/(p2x - p1x))) * (180/Math.PI)) * -1;
 	}
@@ -138,8 +161,6 @@ var DrawLine = function(p1x, p2x, p1y, p2y, PlayerRef){
 	else{
 		this.angle = 0;
 	}
-	
-	var newLine = PS.line(this.p1x, this.p1y, this.p2x, this.p2y);
 
 	//draws the line
 	var tempspr;
@@ -158,29 +179,46 @@ var DrawLine = function(p1x, p2x, p1y, p2y, PlayerRef){
 			PS.debug("Line length: " + this.line._length + "\n");
 			
 			for(i = 0; i < this.line._length; ++i){
-				PS.debug(this.line.peek(i).sprite + "\n");
-				//PS.spriteCollide(this.line[i], this.collision.bind(this));	
+				//PS.debug(this.line.peek(i).sprite + "\n");
+				PS.spriteCollide(this.line.peek(i).sprite, collision);	
 			}
 			
 		}
 	}
 };
 
+DrawLine.prototype.ContainsSprite = function(sprite){
+	var current = this.line._head;
+	while(current != null)
+	{
+		current = current.next;
+		if(current.data.sprite == sprite){
+			return true;
+		} 
+	}
+	
+	return false;
+};
+
+DrawLine.prototype.GetLineData = function(){
+	return this.line;
+};
+
 GameObject.prototype.impart(DrawLine);
 
-DrawLine.prototype.Update() = function(){
-	PS.debug("Line rendered\n");
+DrawLine.prototype.Update = function(){
+	//PS.debug("Line rendered\n");
 };
 
 DrawLine.prototype.Draw = function(offsetX, offsetY){
-	PS.debug("Line rendered\n");
-	for(i = 0; i < this.line._length; ++i){
-			PS.spriteMove(this.line.peek(i).sprite, this.line.peek(i).x, this.line.peek(i).y);
-			PS.spriteColor(this.line.peek(i).sprite, PS.COLOR_BLACK);
-	}
-};
-
-DrawLine.prototype.collision = function(s1, p1, s2, p2, type)
-{
 	
+	if(this.line != null){
+		for(i = 0; i < this.line._length; ++i){
+			var tmp = this.line.peek(i);
+			PS.spriteMove(tmp.sprite, tmp.x, tmp.y);
+			//PS.debug(tmp.sprite + ": " + tmp.x + ", " + tmp.y);
+			PS.spriteSolidColor(tmp.sprite, PS.COLOR_BLACK);
+		}
+		//PS.debug("Line rendered\n");	
+	}
 };

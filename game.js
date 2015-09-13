@@ -43,6 +43,7 @@ See dygraphs License.txt, <http://dygraphs.com> and <http://opensource.org/licen
 
 var Game;
 var Player;
+var Lines = [];
 
 PS.init = function( system, options ) {
 	"use strict";
@@ -230,72 +231,84 @@ PS.keyUp = function( key, shift, ctrl, options ) {
 PS.swipe = function( data, options ) {
 	"use strict";
 
-	// Uncomment the following block to inspect parameters
 
 	// Add code here for when an input event is detected
 	
-	//calculates the line between the first and last beads that were swiped
-	var newLine = new Array();
-	newLine = PS.line(data.events[0].x, data.events[0].y, data.events[data.events.length - 1].x, data.events[data.events.length - 1].y);
+	// if(Lines.length > 0){
+		// Game.removeObject(Lines.pop());	
+	// }
 	
-	var newLine2 = new DrawLine(data.events[0].x, data.events[0].y, 
+	//Creates the line between the first and last beads that were swiped
+	var newLine = new DrawLine(data.events[0].x, data.events[0].y, 
 		data.events[data.events.length - 1].x, data.events[data.events.length - 1].y, Player);
 		PS.debug("Line added\n");
-	Game.addObject(newLine2);
+	Lines.push(newLine);
+	Game.addObject(newLine);
 	
-	//calculate the angle of the line
-	var angle;
-	var p1x = newLine[0][0];
-	var p1y = newLine[0][1];
-	var p2x = newLine[newLine.length - 1][0];
-	var p2y = newLine[newLine.length - 1][1];
+};
+
+var findLine = function(CollidedBead){
+		for(i = 0; i < Lines.length; i++){
+			if(Lines[i].line.contains(CollidedBead)){
+				PS.debug("Line found: " + Lines[i].toString());
+				return Lines[i];
+			}
+		}
+		
+		PS.debug("No line found\n");
+};
+
+var verifyCollision = function(InputLine, CollidedBead){
+	if(InputLine == undefined){
+		InputLine = findLine(CollidedBead);	
+	}
 	
-	if ((p1x < p2x) && (p1y > p2y)){
-		angle = ((Math.atan((p1y - p2y)/(p2x - p1x))) * (180/Math.PI)) * -1;
-	}
-	else if ((p1x > p2x) && (p1y < p2y)){
-		angle = ((Math.atan((p2y - p1y)/(p1x - p2x))) * (180/Math.PI)) * -1;
-	}
-	else if ((p1x > p2x) && (p1y > p2y)){
-		angle = (Math.atan((p1y - p2y)/(p1x - p2x))) * (180/Math.PI);
-	}
-	else if ((p1x < p2x) && (p1y < p2y)){
-		angle = (Math.atan((p2y - p1y)/(p2x - p1x))) * (180/Math.PI);
-	}
-	else if (p1x == p2x){
-		angle = 90;
-	}
-	else{
-		angle = 0;
-	}
-
-	//draws the line
-	var tempspr;
-	var i;
-	for (i=0; i < newLine.length; i++){
-		if (newLine[i][0] < 0 || newLine[i][1] < 0){
-			break;
+	var current = InputLine._head;
+	while(current.next != null){
+		if(current = CollidedBead)
+		{
+			current.data.isCollided = true;
+			continue;
 		}
-		else {
-			//PS.color(newLine[i][0], newLine[i][1], PS.COLOR_BLACK);
-			tempspr = PS.spriteSolid(1,1);
-			PS.spriteMove(tempspr, newLine[i][0], newLine[i][1]);
-			PS.data(newLine[i][0], newLine[i][1], angle);
-
-			PS.spriteCollide(tempspr, collision);
-			iscolliding = false;
+		
+		if(current.data != CollidedBead && current.data.isCollided == true){
+			return false;
 		}
+		
+		current = current.next;
+	}
+	
+	return true;
+};
+
+var resetBeadCollision = function(line){
+	var current = line._head;
+	while(current.next != null){
+		current.data.isCollided = false;
+		
+		current = current.next;
 	}
 };
 
 var iscolliding = false;
 //collision behavior
 function collision(s1, p1, s2, p2, type){
-	//PS.debug("In collision!\n");
+	
 	var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
-	//var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
+	var angle = PS.data(s1_pos.x, s1_pos.y);
+	var CollidedBead = Bead(s1_pos.x, s1_pos.y, s1, angle);
+	
+	var line = findLine(CollidedBead);
+	//PS.debug("Line found: " + Lines.pop().toString());
+	
+	//PS.debug(line);
+	
+	var collisionFlag = true;// = verifyCollision(line, CollidedBead);
+	var collisionTimerID;
+	
+	//PS.debug(line.GetLineData()._length + "\n");
 
-	if (s2 == Player.sprite && !iscolliding){
+	if (s2 == Player.sprite && collisionFlag){
 		PS.debug("\nball has collided 2\n");
 		PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
 
@@ -337,14 +350,15 @@ function collision(s1, p1, s2, p2, type){
 				Player.ySpeed = (Player.ySpeed * -1);
 			}
 		}
-		if (iscolliding == false){
-		iscolliding = true;
-		}
+		
+		collisionTimerID = PS.timerStart(PS.DEFAULT, resetBeadCollision(line));
+		PS.timerStop(collisionTimerID);
+		
 		return 1;
 	}
-	else{
-	iscolliding = false;
-	return PS.DEFAULT;
+	else
+	{
+		return PS.DEFAULT;
 	}
 }
 
