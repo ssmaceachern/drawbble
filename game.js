@@ -68,7 +68,8 @@ PS.init = function( system, options ) {
 	//PS.color(31, PS.ALL, PS.COLOR_BLACK);
 	
 	Game.run();
-	
+
+	/*
 	var tempspr_1, tempspr_2, tempspr_3, tempspr_4;
 	var o;
 	for (o=0; o < 32; o++){
@@ -89,7 +90,12 @@ PS.init = function( system, options ) {
 		PS.spriteCollide(tempspr_3, collision);
 		PS.spriteCollide(tempspr_4, collision);
 	}
-	
+	*/
+
+	drawLine(0, 31, 0, 0, Player);
+	drawLine(0, 31, 31, 31, Player);
+	drawLine(0, 0, 0, 31, Player);
+	drawLine(31, 31, 0, 31, Player);
 };	
 
 // PS.touch ( x, y, data, options )
@@ -309,31 +315,40 @@ function collision(s1, p1, s2, p2, type){
 	//PS.debug(line.GetLineData()._length + "\n");
 
 	if (s2 == Player.sprite && collisionFlag){
+	//var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
+	var tempX = Player.xSpeed;
+	var tempY = Player.ySpeed;
+	if (s2 == Player.sprite && !iscolliding){
 		PS.debug("\nball has collided 2\n");
 		PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
+			
+		//var dp = Math.sqrt(pow(tempX, 2) + pow(tempY, 2)) * Math.cos(
+		//http://www.gamedev.net/topic/61069-bounce-vector/
+
 
 		//change ball velocity
-		if (Player.ySpeed >= 0){
+		//if (Player.ySpeed >= 0){
 			if(PS.data(s1_pos.x, s1_pos.y) < 0){
 			PS.debug("\nneg angle\n");
-			Player.xSpeed = -1/30;
-			Player.ySpeed = 0;
+			Player.xSpeed = tempY;
+			Player.ySpeed = tempX;
 			}
 			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
 			PS.debug("\npos angle\n");
-			Player.xSpeed = 1/30;
-			Player.ySpeed = 0;
+			Player.xSpeed = (tempY * -1);
+			Player.ySpeed = (tempX * -1);
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
 			PS.debug("\nwall bounce\n" + s1_pos.x + s1_pos.y + PS.data(s1_pos.x, s1_pos.y));
-			Player.xSpeed = (Player.xSpeed * -1);
+			Player.xSpeed = (tempX * -1);
 			iscolliding = true;
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
-				PS.debug("\nline bounce\n");
-				Player.ySpeed = (Player.ySpeed * -1);
+			PS.debug("\nline bounce\n");
+			Player.ySpeed = (tempY * -1);
 			}
 		}
+		
 		else if(Player.ySpeed < 0){
 			if(PS.data(s1_pos.x, s1_pos.y) < 0){
 			Player.xSpeed = 1/30;
@@ -347,13 +362,13 @@ function collision(s1, p1, s2, p2, type){
 			Player.xSpeed = (Player.xSpeed * -1);
 			}
 			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
-				Player.ySpeed = (Player.ySpeed * -1);
+			Player.ySpeed = (Player.ySpeed * -1);
 			}
 		}
-		
+
 		collisionTimerID = PS.timerStart(PS.DEFAULT, resetBeadCollision(line));
 		PS.timerStop(collisionTimerID);
-		
+
 		return 1;
 	}
 	else

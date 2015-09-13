@@ -221,4 +221,5 @@ DrawLine.prototype.Draw = function(offsetX, offsetY){
 		}
 		//PS.debug("Line rendered\n");	
 	}
+
 };
