@@ -162,7 +162,7 @@ var DrawLine = function(p1x, p1y, p2x, p2y, PlayerRef){
 		this.angle = 0;
 	}
 
-	//draws the line
+	//Draws the line
 	var tempspr;
 	var i;
 	for (i = 0; i < newLine.length; i++){
@@ -170,16 +170,12 @@ var DrawLine = function(p1x, p1y, p2x, p2y, PlayerRef){
 			break;
 		}
 		else {
-			
 			tempspr = PS.spriteSolid(1,1);
-			PS.debug(newLine[i][0] + " + " + newLine[i][1] + "\n");
 			
 			PS.spriteMove(tempspr, newLine[i][0], newLine[i][1]);
 			PS.data(newLine[i][0], newLine[i][1], this.angle);
 			
 			this.line.add(new Bead(newLine[i][0], newLine[i][1], tempspr, this.angle));
-			PS.debug("Line length: " + this.line._length + "\n");
-			
 		}
 	}
 	
@@ -208,20 +204,18 @@ DrawLine.prototype.GetLineData = function(){
 
 GameObject.prototype.impart(DrawLine);
 
-DrawLine.prototype.Update = function(){
-	//PS.debug("Line rendered\n");
-};
+DrawLine.prototype.Update = function(){};
 
 DrawLine.prototype.Draw = function(offsetX, offsetY){
 	
 	if(this.line != null){
+		var tmp;
 		for(i = 0; i < this.line._length; i++){
-			var tmp = this.line.peek(i);
-			PS.spriteMove(tmp.sprite, tmp.x, tmp.y);
-			//PS.debug(tmp.sprite + ": " + tmp.x + ", " + tmp.y);
+			tmp = this.line.peek(i);
+			
 			PS.spriteSolidColor(tmp.sprite, PS.COLOR_BLACK);
-		}
-		//PS.debug("Line rendered\n");	
+			PS.spriteMove(tmp.sprite, tmp.x, tmp.y);
+		}	
 	}
 
 };

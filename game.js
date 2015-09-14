@@ -65,6 +65,9 @@ PS.init = function( system, options ) {
 	Lines.push(new DrawLine(0, 31, 31, 31, Player));
 	Lines.push(new DrawLine(31, 0, 31, 31, Player));
 	Lines.push(new DrawLine(0, 0, 31, 0, Player));
+	
+	PS.gridColor(PS.COLOR_WHITE);
+	PS.statusText("Draw a line!");
 };	
 
 // PS.touch ( x, y, data, options )
@@ -209,27 +212,21 @@ PS.swipe = function( data, options ) {
 
 	// Add code here for when an input event is detected
 	
-	// if(Lines.length > 0){
-		// Game.removeObject(Lines.pop());	
-	// }
-	
 	//Creates the line between the first and last beads that were swiped
 	var newLine = new DrawLine(data.events[0].x, data.events[0].y, 
 		data.events[data.events.length - 1].x, data.events[data.events.length - 1].y, Player);
 		
-	Lines.push(newLine);
-	//PS.debug("Line added: " + newLine.name + " " + Lines.length + "\n");
-	
+	Lines.push(newLine);	
 	Game.addObject(newLine);
 	
 };
 
 var findLine = function(CollidedBead){
 		for(i = 0; i < Lines.length; i++){
-			// if(Lines[i].line.contains(CollidedBead.sprite)){
-				// PS.debug("Line found: " + Lines[i].toString());
-				// return Lines[i];
-			// }
+			if(Lines[i].line.contains(CollidedBead.sprite)){
+				PS.debug("Line found: " + Lines[i].toString());
+				return Lines[i];
+			}
 		}
 		
 		PS.debug("No line found\n");
@@ -269,7 +266,8 @@ function collision(s1, p1, s2, p2, type){
 	
 		var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
 		var angle = PS.data(s1_pos.x, s1_pos.y);
-		var CollidedBead = new Bead(s1_pos.x, s1_pos.y, s1, angle);
+		
+		//var CollidedBead = new Bead(s1_pos.x, s1_pos.y, s1, angle);
 		 		
 		//PS.debug("Collision Function: " + Lines.length + "\n");
 		var collisionFlag = true;
@@ -279,57 +277,55 @@ function collision(s1, p1, s2, p2, type){
 		
 			var tempX = Player.xSpeed;
 			var tempY = Player.ySpeed;
-			PS.debug("\nBall has collided with: " + s2 + "\n");
-			PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
-				
-			//var dp = Math.sqrt(pow(tempX, 2) + pow(tempY, 2)) * Math.cos(
-			//http://www.gamedev.net/topic/61069-bounce-vector/
+			
+			//PS.debug("\nBall has collided with: " + s1 + "\n");
 			
 			//var line = findLine(CollidedBead);
 		
-			collisionFlag = true; //verifyCollision(line, CollidedBead);	
-	
+			collisionFlag = true; //verifyCollision(line, CollidedBead);
+			
 			//change ball velocity
 			if (Player.ySpeed >= 0){
 				if(angle < 0){
-				PS.debug("\nneg angle\n");
-				Player.xSpeed = tempY;
-				Player.ySpeed = tempX;
+				Player.xSpeed = Math.cos(angle) * -Player.moveSpeed;
+				Player.ySpeed = Math.sin(angle) * -Player.moveSpeed;
 				}
 				else if((angle > 0) && (angle < 90)){
-				PS.debug("\npos angle\n");
-				Player.xSpeed = (tempY * -1);
-				Player.ySpeed = (tempX * -1);
+				Player.xSpeed = Math.cos(angle) * (Player.moveSpeed * -1);
+				Player.ySpeed = Math.sin(angle) * (Player.moveSpeed * -1);
 				}
 				else if(angle == 90){
-				PS.debug("\nwall bounce\n" + s1_pos.x + s1_pos.y + angle);
-				Player.xSpeed = (tempX * -1);
-				iscolliding = true;
+				Player.xSpeed = Player.xSpeed * -1;
+				//Player.ySpeed = Math.sin(angle) * (Player.moveSpeed * -1);
 				}
 				else if(angle == 0){
-				PS.debug("\nline bounce\n");
-				Player.ySpeed = (tempY * -1);
+				//Player.xSpeed = Math.cos(angle) * (Player.moveSpeed * -1);
+				Player.ySpeed = Player.ySpeed * -1;
 				}
 			}
 			else if(Player.ySpeed < 0){
 				if(angle < 0){
-				Player.xSpeed = 1/30;
-				Player.ySpeed = 0;
+				Player.xSpeed = Math.cos(angle) * -Player.moveSpeed;
+				Player.ySpeed = Math.sin(angle) * -Player.moveSpeed;
 				}
 				else if((angle > 0) && (angle < 90)){
-				Player.xSpeed = -1/30;
-				Player.ySpeed = 0;
+				Player.xSpeed = Math.cos(angle) * (Player.moveSpeed * -1);
+				Player.ySpeed = Math.sin(angle) * (Player.moveSpeed * -1);
 				}
 				else if(angle == 90){
-				Player.xSpeed = (Player.xSpeed * -1);
+				Player.xSpeed = Player.xSpeed * -1;
+				//Player.ySpeed = Math.sin(angle) * (Player.moveSpeed * -1);
 				}
 				else if(angle == 0){
-				Player.ySpeed = (Player.ySpeed * -1);
+				//Player.xSpeed = Math.cos(angle) * (Player.moveSpeed * -1);
+				Player.ySpeed = Player.ySpeed * -1;
 				}
 			}
 	
 		//collisionTimerID = PS.timerStart(PS.DEFAULT, resetBeadCollision(line));
 		//PS.timerStop(collisionTimerID);
+		
+		//PS.debug("\nAngle: " + angle + "\nX-speed: " + Player.xSpeed + "\nY-speed: " + Player.ySpeed + "\n");
 
 		return 1;
 	}
