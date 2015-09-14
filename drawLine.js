@@ -67,7 +67,7 @@ DoublyLinkedList.prototype = {
 			while(current.next != null)
 			{
 				current = current.next;
-				if(current == object){
+				if(current.data.sprite == object){
 					return true;
 				}
 			}
@@ -128,11 +128,11 @@ DoublyLinkedList.prototype = {
  * @param {Object} p1y
  * @param {Object} p2y
  */
-var DrawLine = function(p1x, p2x, p1y, p2y, PlayerRef){
+var DrawLine = function(p1x, p1y, p2x, p2y, PlayerRef){
 	this.angle;
 	this.p1x = p1x;
-	this.p1y = p2x;
-	this.p2x = p1y;
+	this.p1y = p1y;
+	this.p2x = p2x;
 	this.p2y = p2y;
 	this.player = PlayerRef;
 	this.name = "Line";

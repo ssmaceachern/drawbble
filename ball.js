@@ -7,11 +7,10 @@ var Ball = function(x, y){
 	
 	this.imageID = PS.imageLoad("ball.bmp", this.spriteLoader.bind(this), 4);
 	
-	this.Gravity = 1/60;
-	this.moveSpeed = 2;
-
+	this.Gravity = 1/30;
+	
 	this.xSpeed = 0;
-	this.ySpeed = 1/60;
+	this.ySpeed = 1/30;
 };
 
 GameObject.prototype.impart(Ball);

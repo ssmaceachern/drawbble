@@ -58,44 +58,13 @@ PS.init = function( system, options ) {
 	// Add any other initialization code you need here
 	Player = new Ball(14,14);
 	Game.addObject(Player);
-	//Game.addObject(new Ball(14,14));
-
-	//var Ball = PS.imageLoad("ball.bmp", spriteLoader, 4);
-
-	//PS.color(PS.ALL, 0, PS.COLOR_BLACK);
-	//PS.color(PS.ALL, 31, PS.COLOR_BLACK);
-	//PS.color(0, PS.ALL, PS.COLOR_BLACK);
-	//PS.color(31, PS.ALL, PS.COLOR_BLACK);
 	
 	Game.run();
 
-	/*
-	var tempspr_1, tempspr_2, tempspr_3, tempspr_4;
-	var o;
-	for (o=0; o < 32; o++){
-		tempspr_1 = PS.spriteSolid(1,1);
-		tempspr_2 = PS.spriteSolid(1,1);
-		tempspr_3 = PS.spriteSolid(1,1);
-		tempspr_4 = PS.spriteSolid(1,1);
-		PS.spriteMove(tempspr_1, o, 0);
-		PS.spriteMove(tempspr_2, o, 31);
-		PS.spriteMove(tempspr_3, 0, o);
-		PS.spriteMove(tempspr_4, 31, o);
-		PS.data(o, 0, 0);
-		PS.data(o, 31, 0);
-		PS.data(0, o, 90);
-		PS.data(31, o, 90);
-		PS.spriteCollide(tempspr_1, collision);
-		PS.spriteCollide(tempspr_2, collision);
-		PS.spriteCollide(tempspr_3, collision);
-		PS.spriteCollide(tempspr_4, collision);
-	}
-	*/
-
-	drawLine(0, 31, 0, 0, Player);
-	drawLine(0, 31, 31, 31, Player);
-	drawLine(0, 0, 0, 31, Player);
-	drawLine(31, 31, 0, 31, Player);
+	Lines.push(new DrawLine(0, 31, 0, 0, Player));
+	Lines.push(new DrawLine(0, 31, 31, 31, Player));
+	Lines.push(new DrawLine(31, 0, 31, 31, Player));
+	Lines.push(new DrawLine(1, 0, 31, 0, Player));
 };	
 
 // PS.touch ( x, y, data, options )
@@ -247,29 +216,27 @@ PS.swipe = function( data, options ) {
 	//Creates the line between the first and last beads that were swiped
 	var newLine = new DrawLine(data.events[0].x, data.events[0].y, 
 		data.events[data.events.length - 1].x, data.events[data.events.length - 1].y, Player);
-		PS.debug("Line added\n");
+		
 	Lines.push(newLine);
+	//PS.debug("Line added: " + newLine.name + " " + Lines.length + "\n");
+	
 	Game.addObject(newLine);
 	
 };
 
 var findLine = function(CollidedBead){
 		for(i = 0; i < Lines.length; i++){
-			if(Lines[i].line.contains(CollidedBead)){
-				PS.debug("Line found: " + Lines[i].toString());
-				return Lines[i];
-			}
+			// if(Lines[i].line.contains(CollidedBead.sprite)){
+				// PS.debug("Line found: " + Lines[i].toString());
+				// return Lines[i];
+			// }
 		}
 		
 		PS.debug("No line found\n");
 };
 
-var verifyCollision = function(InputLine, CollidedBead){
-	if(InputLine == undefined){
-		InputLine = findLine(CollidedBead);	
-	}
-	
-	var current = InputLine._head;
+var verifyCollision = function(line, CollidedBead){
+	var current = line._head;
 	while(current.next != null){
 		if(current = CollidedBead)
 		{
@@ -296,78 +263,73 @@ var resetBeadCollision = function(line){
 	}
 };
 
-var iscolliding = false;
-//collision behavior
+
+//Collision function
 function collision(s1, p1, s2, p2, type){
 	
-	var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
-	var angle = PS.data(s1_pos.x, s1_pos.y);
-	var CollidedBead = Bead(s1_pos.x, s1_pos.y, s1, angle);
+		var s1_pos = PS.spriteMove(s1, PS.CURRENT, PS.CURRENT);
+		var angle = PS.data(s1_pos.x, s1_pos.y);
+		var CollidedBead = new Bead(s1_pos.x, s1_pos.y, s1, angle);
+		 		
+		PS.debug("Collision Function: " + Lines.length + "\n");
+		var collisionFlag = true;
+		var collisionTimerID;
 	
-	var line = findLine(CollidedBead);
-	//PS.debug("Line found: " + Lines.pop().toString());
-	
-	//PS.debug(line);
-	
-	var collisionFlag = true;// = verifyCollision(line, CollidedBead);
-	var collisionTimerID;
-	
-	//PS.debug(line.GetLineData()._length + "\n");
-
-	if (s2 == Player.sprite && collisionFlag){
-	//var s2_pos = PS.spriteMove(s2, PS.CURRENT, PS.CURRENT);
-	var tempX = Player.xSpeed;
-	var tempY = Player.ySpeed;
-	if (s2 == Player.sprite && !iscolliding){
-		PS.debug("\nball has collided 2\n");
-		PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
-			
-		//var dp = Math.sqrt(pow(tempX, 2) + pow(tempY, 2)) * Math.cos(
-		//http://www.gamedev.net/topic/61069-bounce-vector/
-
-
-		//change ball velocity
-		//if (Player.ySpeed >= 0){
-			if(PS.data(s1_pos.x, s1_pos.y) < 0){
-			PS.debug("\nneg angle\n");
-			Player.xSpeed = tempY;
-			Player.ySpeed = tempX;
-			}
-			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
-			PS.debug("\npos angle\n");
-			Player.xSpeed = (tempY * -1);
-			Player.ySpeed = (tempX * -1);
-			}
-			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
-			PS.debug("\nwall bounce\n" + s1_pos.x + s1_pos.y + PS.data(s1_pos.x, s1_pos.y));
-			Player.xSpeed = (tempX * -1);
-			iscolliding = true;
-			}
-			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
-			PS.debug("\nline bounce\n");
-			Player.ySpeed = (tempY * -1);
-			}
-		}
+		if (s2 == Player.sprite && collisionFlag){
 		
-		else if(Player.ySpeed < 0){
-			if(PS.data(s1_pos.x, s1_pos.y) < 0){
-			Player.xSpeed = 1/30;
-			Player.ySpeed = 0;
+			var tempX = Player.xSpeed;
+			var tempY = Player.ySpeed;
+			PS.debug("\nBall has collided with: " + s2 + "\n");
+			PS.debug(s1_pos.x + " , " + s1_pos.y + " , " + PS.data(s1_pos.x, s1_pos.y));
+				
+			//var dp = Math.sqrt(pow(tempX, 2) + pow(tempY, 2)) * Math.cos(
+			//http://www.gamedev.net/topic/61069-bounce-vector/
+			
+			//var line = findLine(CollidedBead);
+		
+			collisionFlag = true; //verifyCollision(line, CollidedBead);	
+	
+			//change ball velocity
+			if (Player.ySpeed >= 0){
+				if(angle < 0){
+				PS.debug("\nneg angle\n");
+				Player.xSpeed = tempY;
+				Player.ySpeed = tempX;
+				}
+				else if((angle > 0) && (angle < 90)){
+				PS.debug("\npos angle\n");
+				Player.xSpeed = (tempY * -1);
+				Player.ySpeed = (tempX * -1);
+				}
+				else if(angle == 90){
+				PS.debug("\nwall bounce\n" + s1_pos.x + s1_pos.y + angle);
+				Player.xSpeed = (tempX * -1);
+				iscolliding = true;
+				}
+				else if(angle == 0){
+				PS.debug("\nline bounce\n");
+				Player.ySpeed = (tempY * -1);
+				}
 			}
-			else if((PS.data(s1_pos.x, s1_pos.y) > 0) && (PS.data(s1_pos.x, s1_pos.y) < 90)){
-			Player.xSpeed = -1/30;
-			Player.ySpeed = 0;
+			else if(Player.ySpeed < 0){
+				if(angle < 0){
+				Player.xSpeed = 1/30;
+				Player.ySpeed = 0;
+				}
+				else if((angle > 0) && (angle < 90)){
+				Player.xSpeed = -1/30;
+				Player.ySpeed = 0;
+				}
+				else if(angle == 90){
+				Player.xSpeed = (Player.xSpeed * -1);
+				}
+				else if(angle == 0){
+				Player.ySpeed = (Player.ySpeed * -1);
+				}
 			}
-			else if(PS.data(s1_pos.x, s1_pos.y) == 90){
-			Player.xSpeed = (Player.xSpeed * -1);
-			}
-			else if(PS.data(s1_pos.x, s1_pos.y) == 0){
-			Player.ySpeed = (Player.ySpeed * -1);
-			}
-		}
-
-		collisionTimerID = PS.timerStart(PS.DEFAULT, resetBeadCollision(line));
-		PS.timerStop(collisionTimerID);
+	
+		//collisionTimerID = PS.timerStart(PS.DEFAULT, resetBeadCollision(line));
+		//PS.timerStop(collisionTimerID);
 
 		return 1;
 	}
@@ -375,6 +337,7 @@ function collision(s1, p1, s2, p2, type){
 	{
 		return PS.DEFAULT;
 	}
+	
 }
 
 // PS.input ( sensors, options )
