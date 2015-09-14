@@ -61,10 +61,10 @@ PS.init = function( system, options ) {
 	
 	Game.run();
 
-	Lines.push(new DrawLine(0, 31, 0, 0, Player));
+	Lines.push(new DrawLine(0, 32, 0, 0, Player));
 	Lines.push(new DrawLine(0, 31, 31, 31, Player));
 	Lines.push(new DrawLine(31, 0, 31, 31, Player));
-	Lines.push(new DrawLine(1, 0, 31, 0, Player));
+	Lines.push(new DrawLine(0, 0, 31, 0, Player));
 };	
 
 // PS.touch ( x, y, data, options )
@@ -271,7 +271,7 @@ function collision(s1, p1, s2, p2, type){
 		var angle = PS.data(s1_pos.x, s1_pos.y);
 		var CollidedBead = new Bead(s1_pos.x, s1_pos.y, s1, angle);
 		 		
-		PS.debug("Collision Function: " + Lines.length + "\n");
+		//PS.debug("Collision Function: " + Lines.length + "\n");
 		var collisionFlag = true;
 		var collisionTimerID;
 	

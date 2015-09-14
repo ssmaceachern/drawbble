@@ -165,26 +165,28 @@ var DrawLine = function(p1x, p1y, p2x, p2y, PlayerRef){
 	//draws the line
 	var tempspr;
 	var i;
-	for (i=0; i < newLine.length; i++){
+	for (i = 0; i < newLine.length; i++){
 		if (newLine[i][0] < 0 || newLine[i][1] < 0){
 			break;
 		}
 		else {
 			
 			tempspr = PS.spriteSolid(1,1);
+			PS.debug(newLine[i][0] + " + " + newLine[i][1] + "\n");
+			
 			PS.spriteMove(tempspr, newLine[i][0], newLine[i][1]);
 			PS.data(newLine[i][0], newLine[i][1], this.angle);
 			
 			this.line.add(new Bead(newLine[i][0], newLine[i][1], tempspr, this.angle));
 			PS.debug("Line length: " + this.line._length + "\n");
 			
-			for(i = 0; i < this.line._length; ++i){
-				//PS.debug(this.line.peek(i).sprite + "\n");
-				PS.spriteCollide(this.line.peek(i).sprite, collision);	
-			}
-			
 		}
 	}
+	
+	for(i = 0; i < this.line._length; i++){
+		PS.spriteCollide(this.line.peek(i).sprite, collision);	
+	}
+	
 };
 
 DrawLine.prototype.ContainsSprite = function(sprite){
@@ -213,7 +215,7 @@ DrawLine.prototype.Update = function(){
 DrawLine.prototype.Draw = function(offsetX, offsetY){
 	
 	if(this.line != null){
-		for(i = 0; i < this.line._length; ++i){
+		for(i = 0; i < this.line._length; i++){
 			var tmp = this.line.peek(i);
 			PS.spriteMove(tmp.sprite, tmp.x, tmp.y);
 			//PS.debug(tmp.sprite + ": " + tmp.x + ", " + tmp.y);
